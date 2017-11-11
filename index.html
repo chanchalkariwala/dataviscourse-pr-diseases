@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Visualization - Homework 6</title>
+    <title>Filmline</title>
     <link rel="stylesheet" href="public/css/style.css"/>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <!--<script type="text/javascript" src="bower_components/d3/d3.js"></script>-->
@@ -15,8 +15,42 @@
 
 <body>
 
+<div id="expenseBudgetChart">
+    <div class="content">
+        <div id="divYearSelector">
+        </div>
+        <div id="divGenreSelector">
+        </div>
+        <div id="chart">
+        </div>
+    </div>    
+    <div class="sideBar">
+        This scatterplot shows Budget vs Revenue over years and genres. This sidenote has been added temporarily to explain. 
+        <ul>
+            <li>Scales are pending. X-Axis is the budget, Y-Axis is the revenue.
+            <li>Each circle has a Movie Title.<br/>Planning to add more info on movie.
+            <li>There is a drop down for years.<br/>Pending - Option for all time. 
+            <li>There is a drop down for genre.<br/>Pending - Option for all genres. 
+        </ul>
+    </div>
+</div>
 
-<!--<script type="application/javascript" src="public/js/tileChart.js"></script>-->
+<div id="releaseChart">
+    <div class="content">
+        <div id="chart">
+        </div>
+    </div>    
+    <div class="sideBar">
+        Here we will show a Heatmap of number of Movies released in months and years
+        <ul>
+            <li>Only data processing has been done. It is being logged in console.
+        </ul>
+        
+    </div>
+</div>
 
+<script type="application/javascript" src="public/js/script.js"></script>
+<script type="application/javascript" src="public/js/expenseBudgetChart.js"></script>
+<script type="application/javascript" src="public/js/releaseChart.js"></script>
 </body>
 </html>
