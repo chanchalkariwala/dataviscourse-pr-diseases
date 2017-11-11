@@ -18,11 +18,10 @@ constructor (budgetRevenueYear,movieDetails){
 };
 
 update(){
-
+    d3.select("#budgetRevenueMovieDetails").text("Click on the bars to see year specific data. Animations and styling are yet to be completed.");  
     let self=this;
     let displayDetails= function(id){
         d3.select("#budgetRevenueMovieDetails").text("");   
-        debugger; 
         let movieDetails=[]
         for (let item of self.movieDetails)
         {
@@ -97,12 +96,16 @@ update(){
     .data(this.budgetRevenueYear)
     .enter().append("rect").attr("fill","#19C4CC")
     .attr("class", "budgetYearBar")
-    .attr("id", function(d){return "bud-"+d["year"]})
+    .attr("id", function(d){return "bud-"+d["year"]})    
     .attr("x", function(d) { return 22+x(d["year"]); })
     .attr("y", function(d) { return 500-y1(d["budget"]); })
     .attr("width", 7)
+    .transition()
+    .duration(1000)
     .attr("height", function(d) { return y1(d["budget"]); })
+    this.svg.selectAll(".budgetYearBar")
     .on("click",function(){displayDetails(this.id)});
+
 
     this.svg.selectAll(".revenueYearBar")
     .data(this.budgetRevenueYear)
@@ -112,7 +115,10 @@ update(){
     .attr("x", function(d) { return 29+x(d["year"]); })
     .attr("y", function(d) { return 500-y1(d["revenue"]); })
     .attr("width", 7)
+    .transition()
+    .duration(1000)
     .attr("height", function(d) { return y1(d["revenue"]); })
+    this.svg.selectAll(".revenueYearBar")
     .on("click",function(){displayDetails(this.id)});
 
     d3.select(".axis--x").selectAll("text:not(#xAxisLabel)").attr("transform","rotate(-70)");
