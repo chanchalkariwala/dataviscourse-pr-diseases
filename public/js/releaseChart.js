@@ -15,32 +15,14 @@ class ReleaseChart {
                 continue;
             }
             
-            let release_year = 0;
-            let release_month = 0;
-            
-            //console.log(movieDetails[i].release_date.indexOf('-'))
-            
-            if(movieDetails[i].release_date.indexOf('-') == 2)
-            {
-                release_year = parseInt(movieDetails[i].release_date.substring(movieDetails[i].release_date.length - 4, movieDetails[i].release_date.length))
-                
-                release_month = parseInt(movieDetails[i].release_date.substring(movieDetails[i].release_date.length - 7, movieDetails[i].release_date.length - 5))
-            }    
-            else
-            {
-                release_year = parseInt(movieDetails[i].release_date.substring(0, 4))
-                
-                release_month = parseInt(movieDetails[i].release_date.substring(5, 7))
-            }
-              
-            if(release_year.toString().length == 1)
-            {
-                console.log(movieDetails[i])
-            }
+            let release_year = parseInt(movieDetails[i].release_year)
+            let release_month = parseInt(movieDetails[i].release_month)
               
             if(this.releaseYearsDict[release_year] == undefined)
             {
                 this.releaseYearsDict[release_year] = {}
+                
+                //for(let j = 1, j<=12; j++)
             }
             
             if(this.releaseYearsDict[release_year][release_month] == undefined)
