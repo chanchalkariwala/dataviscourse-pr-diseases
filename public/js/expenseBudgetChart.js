@@ -1,34 +1,13 @@
 class ExpenseBudgetChart {
 
-    constructor (movieDetails) {
+    constructor (movieDetails, onchange = 0, years = 0, genres = 0, allGenres, genreColors) {
+    //constructor (movieDetails) {
         
         let self = this;
 
-        this.movieDetails = new Array();
-        
-        this.genres = {};
-        
-        for(var i = 0; i<movieDetails.length; i++)
-        {
-            if(movieDetails[i].budget != 0 && movieDetails[i].revenue != 0)
-            {
-                this.movieDetails.push(movieDetails[i])
-                
-                for(let value of movieDetails[i].genres)
-                {
-                    self.genres[value['id']] = value
-                }
-            }
-        }
-        
-        var arr = [];
-
-        for (var key in this.genres) {
-            if (this.genres.hasOwnProperty(key)) {
-                arr.push( this.genres[key] );
-            }
-        }
-        this.genres = arr;
+        this.movieDetails = movieDetails.slice();
+        this.allGenres = Object.keys(allGenres)
+        this.genreColors = genreColors 
         
         this.movieDetailsTotal = this.movieDetails.slice();
         
@@ -38,7 +17,12 @@ class ExpenseBudgetChart {
 
         //Gets access to the div element created for this chart from HTML
         this.svgBounds_temp = divChart.node().getBoundingClientRect();
-        this.svgBounds = {'width':this.svgBounds_temp.width, 'height':500};
+        this.svgBounds = {'width':this.svgBounds_temp.width, 'height':600};
+        
+        if(onchange)
+        {
+            divChart.selectAll("svg").remove();
+        }
         
         //add the svg to the div
         this.svg = divChart.append("svg")
@@ -46,46 +30,10 @@ class ExpenseBudgetChart {
             .attr("height", this.svgBounds.height)
             
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
+        
+        //Area for the second x-axis for the brush
         this.svgHeight = this.svgBounds.height - this.margin.top - this.margin.bottom;
 
-        let yearSelector = d3.select('#divYearSelector').append('select').attr('id', 'yearSelector');
-        
-        yearSelector.on('change', function(){
-            let YearValue = d3.select('#yearSelector').property('value')
-            let genreValue = d3.select('#genreSelector').property('value')
-            self.update(YearValue, genreValue);
-        })
-        
-        let years = d3.map(this.movieDetails, function(d){return d.release_year;}).keys()
-        years.sort();
-
-        yearSelector.append('option').text('Overall').attr('value', 'overall')
-        
-        yearSelector.selectAll('option')
-            .data(years).enter()
-            .append('option')
-            .text(function (d) { 
-                return d; 
-            });
-        
-        
-        let genreSelector = d3.select('#divGenreSelector').append('select').attr('id', 'genreSelector');
-        
-        genreSelector.on('change', function(){
-            let YearValue = d3.select('#yearSelector').property('value')
-            let genreValue = d3.select('#genreSelector').property('value')
-            self.update(YearValue, genreValue);
-        })
-        
-        genreSelector.append('option').text('Overall').attr('value', 'overall')
-        
-        genreSelector.selectAll('option')
-            .data(this.genres).enter()
-            .append('option')
-            .text(function (d) { 
-                return d.name; 
-            });
-        
         this.xScale = d3.scaleLinear()
             .range([this.margin.left, this.svgWidth])
         
@@ -95,55 +43,56 @@ class ExpenseBudgetChart {
         this.xAxis = d3.axisBottom().scale(this.xScale).ticks(20)
         this.yAxis = d3.axisLeft().scale(this.yScale).ticks(20)
         
-    };
-
-
-    update (year, genre) {
+        this.setupData(years, genres)
         
-        //console.log(this.movieDetails)
+    };
+    
+    setupData(years, genres)
+    {
+        
+        if(years == 0 && genres == 0)
+        {
+            this.update(onchange)
+            return;
+        }
+        
+        if(years.length == 0 || genres.length == 0)
+        {
+            this.movieDetails.length = 0
+        }
+        
         let self = this;
         
-        if(year != undefined && year != null)
+        if(years != undefined && years != null && years != 0)
         {
-            if(year == 'overall')
-            {
-                this.movieDetails = this.movieDetailsTotal.slice();
-            }
-            else
-            {
-                year = parseInt(year)
+            this.movieDetails.length = 0
             
-                this.movieDetails.length = 0
-                
-                for(var i = 0; i<this.movieDetailsTotal.length; i++)
+            for(var i = 0; i<this.movieDetailsTotal.length; i++)
+            {
+                if(years.includes(this.movieDetailsTotal[i].release_year))
                 {
-                    if(this.movieDetailsTotal[i].release_year == year)
-                    {
-                        this.movieDetails.push(this.movieDetailsTotal[i])
-                    }
+                    this.movieDetails.push(this.movieDetailsTotal[i])
                 }
             }
         }
         
         var selectedMovies = [];
         
-        if(genre != undefined && genre != null)
+        if(genres != undefined && genres != null && genres != 0)
         {
-            if(genre == 'overall')
+            if(genres == 0)
             {
-                if(year == 'overall')
+                if(years == 0)
                 {
                     this.movieDetails = this.movieDetailsTotal.slice();
                 }
-                else if(year != undefined && year != null)
+                else if(years != undefined && years != null)
                 {
-                    year = parseInt(year)
-            
                     this.movieDetails.length = 0
                     
                     for(var i = 0; i<this.movieDetailsTotal.length; i++)
                     {
-                        if(this.movieDetailsTotal[i].release_year == year)
+                        if(years.includes(this.movieDetailsTotal[i].release_year))
                         {
                             this.movieDetails.push(this.movieDetailsTotal[i])
                         }
@@ -152,68 +101,140 @@ class ExpenseBudgetChart {
             }
             else
             {
+               
+                let diff = this.allGenres.filter(x => genres.indexOf(x) < 0 );
+                
                 for(var i = 0; i<this.movieDetails.length; i++)
                 {
-                    for(var j=0; j<this.movieDetails[i].genres.length; j++)
+                    let union = this.movieDetails[i].genresList.filter(x => diff.indexOf(x) >= 0) 
+                    
+                    if(union.length == 0)
                     {
-                        if(this.movieDetails[i].genres[j].name == genre)
-                        {
-                            selectedMovies.push(this.movieDetails[i])
-                            break;
-                        }
+                        selectedMovies.push(this.movieDetails[i])
                     }
                 }
                 
                 this.movieDetails = selectedMovies;
-                console.log(this.movieDetails)
+                //console.log(this.movieDetails)
             }
         }
+         
+        this.update();
+    }
+
+    update () {
+        
+        this.addAxis();
+        this.addCircles();
+        
+    };
+    
+    addCircles(){
+        let self = this;
+        
+        let circles = this.svg.selectAll('circle')
+            .data(this.movieDetails)
+            
+        circles.exit().remove();
+        
+        circles = circles.enter().append('circle').merge(circles);
+            
+        circles
+            .attr('cx', function(d){
+                //console.log(self.xScale(d.budget))
+                return self.xScale(d.budget);
+            })
+            .attr('cy', function(d){
+                return self.yScale(d.revenue);
+            })
+            .attr('r', 5)
+            .attr('fill-opacity', '0.4')
+            .attr('fill', function(d, i){
+                if(d.genresList.length == 1)
+                {
+                    return self.genreColors[d.genresList[0]]
+                }
+            })
+            
+        circles.on('mouseover', function(d){
+                d3.select(this).attr('fill', 'red')
+                d3.select(this).attr('fill-opacity', '1')
+                d3.select(this).attr('r', '7')
+                
+            }).on('mouseout', function(d){
+                d3.select(this).attr('fill', function(d, i){
+                    if(d.genresList.length == 1)
+                    {
+                        return self.genreColors[d.genresList[0]]
+                    }
+                })
+                d3.select(this).attr('fill-opacity', '0.4')
+                d3.select(this).attr('r', '5')
+            })
+        
+        let negCircles = circles.filter(function(d){
+            if(d3.select(this).attr('cx') < self.xScale.range()[0])
+                return true;
+            
+            if(d3.select(this).attr('cx') > self.xScale.range()[1])
+                return true;
+            
+            if(d3.select(this).attr('cy') > self.yScale.range()[0])
+                return true;
+            
+            if(d3.select(this).attr('cy') < self.yScale.range()[1])
+                return true;
+        })
+        
+        negCircles.remove();
+        
+        circles.select('title').remove();
+        
+        circles.append('title')
+            .text(function(d){ return d.original_title + ', ' + d.release_date + '\n'+ d.genresList; })
+    };
+    
+    addAxis(){
+        
+        var self = this;
         
         this.xScale.domain([d3.min(this.movieDetails, d => d.budget), d3.max(this.movieDetails, d => d.budget)])
             
         this.yScale.domain([d3.min(this.movieDetails, d => d.revenue), d3.max(this.movieDetails, d => d.revenue)])
             
-        let xAxis = this.svg.selectAll(".axis--x")
+        let xAxis = this.svg.selectAll(".axis--x1")
         
-        if(xAxis.empty() == false)
+        if(xAxis.empty())
         {
-            xAxis.remove();
+            xAxis = this.svg.append("g")
+                .attr("class", "axis axis--x1")
+                .attr("transform", "translate(" + (-3) + ", " + (this.svgHeight + 3) + ")")
+                
+            xAxis
+                .append("text")
+                .attr("x", this.svgWidth/2 - 20)
+                .attr("dy","2.5em")
+                .attr("fill","black")
+                .attr("id","xAxisLabel")
+                .attr("style","font-size:large")
+                .text("Budget in Millions");
+            
         }
-        
-        xAxis = this.svg.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(" + (-3) + ", " + (this.svgHeight + 3) + ")")
-            //.attr("transform", "translate(" + this.margin.left + ", " + (this.svgHeight + this.margin.bottom) + ")")
-    
-        xAxis
-            .append("text")
-            .attr("x", this.svgWidth/2 - 20)
-            .attr("dy","2.5em")
-            .attr("fill","black")
-            .attr("id","xAxisLabel")
-            .attr("style","font-size:large")
-            .text("Budget in Millions");
         
         xAxis    
             .transition().duration(500)
             .call(this.xAxis)
+            
                
         let yAxis = this.svg.selectAll(".axis--y")
         
-        if(yAxis.empty() == false)
+        if(yAxis.empty())
         {
-            yAxis.remove();
-        }
-            
-        yAxis = this.svg.append("g")
+            yAxis = this.svg.append("g")
             .attr("class", "axis axis--y")
             .attr("transform", "translate(" + (this.margin.left - 3) + ", +3)")
-        
-        yAxis
-            .transition(500)
-            .call(d3.axisLeft().scale(this.yScale).ticks(15))
-        
-        yAxis
+            
+            yAxis
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
@@ -223,33 +244,72 @@ class ExpenseBudgetChart {
             .attr("fill","black")
             .attr("style","font-size:large")
             .text("Revenue in Billions");
-            
-        let circles = this.svg.selectAll('circle')
-            .data(this.movieDetails)
-            
-        circles.exit().remove();
         
-        circles = circles.enter().append('circle').merge(circles);
+        }
             
-        circles.attr('cx', function(d){
-                return self.xScale(d.budget);
-            })
-            .attr('cy', function(d){
-                return self.yScale(d.revenue);
-            })
-            .attr('r', 3)
+        yAxis
+            .transition(500)
+            .call(self.yAxis)
+        
+        
+        let brushG = this.svg.select('#expenseRevenueBrush');
+        
+        let brushed = function() {
+            var selection = d3.event.selection;
             
-        circles.on('mouseover', function(d){
-                d3.select(this).attr('fill', 'blue')
-            }).on('mouseout', function(d){
-                d3.select(this).attr('fill', 'black')
-            })
+            if(selection == null)
+                return;
+            
+            //console.log(selection)
+            
+            self.xScale.domain([self.xScale.invert(selection[0][0]), self.xScale.invert(selection[1][0])])
+            self.yScale.domain([self.yScale.invert(selection[1][1]), self.yScale.invert(selection[0][1])])
+            
+            xAxis    
+                .transition().duration(500)
+                .call(self.xAxis)
+            
+            yAxis    
+                .transition().duration(500)
+                .call(self.yAxis)
+            
+            self.addCircles();
+            
+            let clearButton = d3.select(".clear-button");
+            
+            if(clearButton.empty() === true) {
+                clearButton = self.svg.append('text')
+                    .attr("y", self.svgHeight + self.margin.bottom)
+                    .attr("x", self.svgWidth - self.margin.right - self.margin.left)
+                    .attr('text-anchor', 'start')
+                    .attr("class", "clear-button")
+                    .text("Clear Brush")
+                   
+                clearButton.style('cursor', 'pointer')
+            }
+            
+            clearButton.on('click', function(){
+                
+                self.setupData(0, 0, 0)
+                
+                clearButton.remove();
+            });
+            
+            d3.select("#expenseRevenueBrush").call(brush.move, [[0, 0], [0, 0]]);
+        };
         
-        circles.select('title').remove();
+        if(brushG.empty())
+        {
+            var brush = d3.brush()
+                .extent([[this.xScale.range()[0], this.yScale.range()[1]], [this.xScale.range()[1], this.yScale.range()[0]]])
+                .on("end", brushed);
         
-        circles.append('title')
-            .text(function(d){ return d.original_title + ', ' + d.release_date; })
-        
+            this.svg.append("g")
+                .attr("class", "brush")
+                .attr("id", "expenseRevenueBrush")
+                .call(brush)
+        }
     };
 
 };
+
