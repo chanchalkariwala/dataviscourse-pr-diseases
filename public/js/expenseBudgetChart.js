@@ -17,7 +17,7 @@ class ExpenseBudgetChart {
 
         //Gets access to the div element created for this chart from HTML
         this.svgBounds_temp = divChart.node().getBoundingClientRect();
-        this.svgBounds = {'width':this.svgBounds_temp.width, 'height':600};
+        this.svgBounds = {'width':this.svgBounds_temp.width, 'height':800};
         
         if(onchange)
         {
@@ -28,7 +28,12 @@ class ExpenseBudgetChart {
         this.svg = divChart.append("svg")
             .attr("width", this.svgBounds.width)
             .attr("height", this.svgBounds.height)
-            
+            .attr("style",`background-color: #fff; 
+                            background-image: 
+                            linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+                            linear-gradient(#eee .1em, transparent .1em);
+                            background-size: 100% 1.2em;`)
+                            
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         
         //Area for the second x-axis for the brush

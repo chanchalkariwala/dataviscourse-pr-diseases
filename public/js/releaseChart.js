@@ -16,7 +16,7 @@ class ReleaseChart {
 
         //Gets access to the div element created for this chart from HTML
         this.svgBounds_temp = divChart.node().getBoundingClientRect();
-        this.svgBounds = {'width':this.svgBounds_temp.width, 'height':500};
+        this.svgBounds = {'width':this.svgBounds_temp.width, 'height':700};
         
         if(onchange)
         {

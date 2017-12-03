@@ -9,10 +9,9 @@
 }
 
 .content {
-    display: inline-block;
-    width: 66%;
-    border: 1px solid black;
+    width: 90%;
     padding:10px;
+    margin:auto;
 }
 
 .sideBar {
