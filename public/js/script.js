@@ -1,11 +1,44 @@
 var allDataForViz = {};
+
+let genreColors = {
+        'TV Movie': '#ffffd9',
+        'Foreign': '#e9f6b1',
+        'Western': '#d0ecb3',
+        'Documentary': '#b5e1b6',
+        'War': '#9ad6b9',
+        'Music': '#7cccbc',
+        'History': '#5fc0c0',
+        'Animation': '#3fb4c4',
+        'Mystery': '#35a6c2',
+        'Fantasy': '#2697c1',
+        'Family': '#2089bd',
+        'Horror': '#237bb6',
+        'Science Fiction': '#236eaf',
+        'Crime': '#2260a9',
+        'Adventure': '#2551a2',
+        'Romance': '#26439b',
+        'Action': '#253594',
+        'Thriller': '#1c2c80',
+        'Comedy': '#12246b',
+        'Drama': '#081d58'
+    };
+    
+allDataForViz['genreColors'] = genreColors
+allDataForViz["allGenres"] = {}
+
 d3.csv("data/expensebudget.csv", function(d) {
 
     d.budget = +d.budget / 1000000;
     d.revenue = +d.revenue / 100000000;
     d.genres = d.genres.replace(/'/g, '"');
     d.genres = JSON.parse(d.genres);
-
+    
+    d.genresList = [];
+    for(var i=0; i<d.genres.length; i++)
+    {
+        d.genresList.push(d.genres[i].name)
+    }
+    
     let release_year = 0;
     let release_month = 0;
 
@@ -22,13 +55,14 @@ d3.csv("data/expensebudget.csv", function(d) {
 
     return d;
 
-}, function(error, expenseDetails) {
-    allDataForViz["expenseDetails"] = expenseDetails;
-    let expenseBudgetChart = new ExpenseBudgetChart(expenseDetails);
-    expenseBudgetChart.update();
-
-    let releaseChart = new ReleaseChart(expenseDetails);
-
+}, function(error, movieDetails) {
+    allDataForViz["movieDetails"] = movieDetails;
+    
+    let expenseBudgetChart = new ExpenseBudgetChart(movieDetails, 0, 0, 0, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
+    
+    let releaseChart = new ReleaseChart(movieDetails, 0, 0, 0, allGenres = allDataForViz["allGenres"],  genreColors = allDataForViz['genreColors']);
+    
+    let genreChart = new GenreChart(movieDetails, 0, 0, 0, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
 });
 
 function updateBudgetRevenue(type, ul) {
@@ -69,6 +103,13 @@ function updateBudgetRevenue(type, ul) {
 
     let budRevYearChart = new budgetRevenueYearChart(finalFormattedData, allDataForViz["budgetRevenueYearChart"], 1, genres);
     budRevYearChart.update();
+    
+    let expenseBudgetChart = new ExpenseBudgetChart(allDataForViz["movieDetails"], 1, years, genres, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
+    
+    let releaseChart = new ReleaseChart(allDataForViz["movieDetails"], 1, years, genres, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
+    
+    let genreChart = new GenreChart(allDataForViz["movieDetails"], 1, years, genres, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
+    
 }
 
 function defineOnclickEventsForYearsDropdown() {
@@ -215,7 +256,7 @@ function populateYearDropdown(years) {
 
 function drawGenreBars(genres) {
     let svg = d3.select('#genre-bar')
-        .attr("width", 1035)
+        .attr("width", '100%')
         .attr("height", 50)
         .append("g")
         .attr("transform", "translate(10,10),scale(0.76)");
@@ -298,7 +339,7 @@ function drawGenreBars(genres) {
         })
         .attr("y", 5)
         .attr("fill", function(d) {
-            return genreColors[d[0]]
+            return allDataForViz['genreColors'][d[0]]
         })
         .attr("stroke", "pink")
         .attr("stroke-width", "2")
@@ -310,7 +351,7 @@ function drawGenreBars(genres) {
             return d[1] * 13
         })
         .attr("color", function(d, i) {
-            return genreColors[d[0]]
+            return allDataForViz['genreColors'][d[0]]
         });
     rectangles.on("click", function() {
         if (this.getAttribute("clicked") == "no") {
@@ -448,6 +489,7 @@ function getDictOfDict(movieDetails, onchange = 0, selectedYears = 0, selectedGe
         for (let item in genres) {
             genres[item] = (genres[item] / totalGenres) * 100;
         }
+        allDataForViz["allGenres"] = genres
         drawGenreBars(genres);
         populateYearDropdown(years);
        

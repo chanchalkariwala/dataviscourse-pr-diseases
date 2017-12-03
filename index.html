@@ -17,8 +17,12 @@
     <h4 style="text-align:center">Chanchal Kariwala</h1>
     <h4 style="text-align:center">Sheetal Krishna Mohanadas Janaki</h1>
     <div class="col-md-12 well" id="menu-bar">
-        <svg id="genre-bar"></svg>
-        <select id="year-dropdown" multiple="multiple"></select>
+        <div class="col-md-10 well" id="menu-bar">
+            <svg id="genre-bar"></svg>
+        </div>
+        <div class="col-md-2 well" id="menu-bar">
+            <select id="year-dropdown" multiple="multiple"></select>
+        </div>
         <!--<div class="col-md-10">
             <svg id="genre-bar"></svg>
         </div>
@@ -39,6 +43,20 @@
     </div>
     <div class="col-md-12" id="wordCloudChart">
     </div>
+    
+    <div id="genreChordChart">
+        <div class="content">
+            <div id="chart">
+            </div>
+        </div>    
+        <div class="sideBar">
+            Genre Chord Chart
+            <ul>
+                <li>Beautification
+            </ul>
+        </div>
+    </div>
+    
     <div id="expenseBudgetChart">
         <div class="content">
             <div id="divYearSelector">
@@ -71,28 +89,28 @@
     </div>
 
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://bl.ocks.org/abrahamdu/raw/e1481e86dd4e9d553cc2d7d359b91e68/d3.layout.cloud.js"></script>
 
-
     <script type="text/javascript" src="https://www.jquery-az.com/boots/js/bootstrap-multiselect/bootstrap-multiselect.js"></script>
-    <!--
+    
     <script type="application/javascript" src="public/js/script.js"></script>
     <script type="application/javascript" src="/public/js/wordCloud.js"></script>
+    <script type="application/javascript" src="public/js/genreChart.js"></script>
     <script type="application/javascript" src="public/js/releaseChart.js"></script>
     <script type="application/javascript" src="public/js/expenseBudgetChart.js"></script>
     <script type="application/javascript" src="/public/js/budgetRevenueYearChart.js"></script>    
-    <script type="text/javascript" src="public/bower_components/d3-tip/index.js"></script>-->
+    <script type="text/javascript" src="public/bower_components/d3-tip/index.js"></script>
 
 
-
-    <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/script.js"></script>
-    <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/wordCloud.js"></script>
-    <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/releaseChart.js"></script>
-    <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/expenseBudgetChart.js"></script>
-    <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js//budgetRevenueYearChart.js"></script>
-    <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/bower_components/d3-tip/index.js"></script>
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/script.js"></script> -->
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/wordCloud.js"></script> -->
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/genreChart.js"></script> -->
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/releaseChart.js"></script> -->
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/expenseBudgetChart.js"></script> -->
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/js/budgetRevenueYearChart.js"></script> -->
+    <!-- <script type="application/javascript" src="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/bower_components/d3-tip/index.js"></script> -->
 
 </body>
 
