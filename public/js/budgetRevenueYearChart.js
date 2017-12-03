@@ -38,11 +38,7 @@ class budgetRevenueYearChart {
     };
 
     update() {
-        this.loader.show();
-
-
-
-        
+        this.loader.show();        
         if (this.onchange)
             d3.select("#budgetRevenueYearChart").select("svg").remove();
         let data = this.budgetRevenueYear;

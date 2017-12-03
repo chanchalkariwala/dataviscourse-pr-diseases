@@ -36,7 +36,15 @@
     </div>
    
 
-    <div class="col-md-12">           
+    <div class="col-md-12">  
+    <div class="side-menu col-md-1"><i class="fa fa-info-circle"></i>
+    <span class="nav-text">This stacked bar chart shows the comparison between budget and revenue for all movies, over the years, segregated by genre. For each year, the stacked bar on the left and right of the 'year-tick' indicate budget and revenue respectfully.</span>
+        </div> 
+
+    <div class="col-md-11" id="budgetRevenueYearChart" >
+   <!-- <img src="https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif" class="loader" alt="Loader" id="budgetLoader">-->
+    </div>        
+    <!--        
         <nav class="side-menu col-md-1"><i class="fa fa-info-circle"></i> 
             <span class="nav-text">This bar chart shows three visualizations that you can switch between by using the tabs. For each year, 
             the stacked bar on the left indicates one metric and the right, another. You can use the brushing tool to zoom in and view the data for the early years when the data was much smaller.</span>
@@ -49,7 +57,7 @@
               <button class="w3-bar-item w3-button" id="button_Tokyo" onclick="openViz('Tokyo')">Tokyo</button>
             </div>
             <div class="w3-container viz" style="display:none" id="budgetRevenueYearChart">
-                <img src="https://loading.io/spinners/pies/lg.pie-chart-loading-gif.gif" class="loader" alt="Loader" id="budgetLoader">
+                <img src="https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif" class="loader" alt="Loader" id="budgetLoader">
             </div>
             <div id="Paris" class="w3-container viz" style="display:none">
               <h2>Paris</h2>
@@ -60,14 +68,19 @@
               <h2>Tokyo</h2>
               <p>Tokyo is the capital of Japan.</p>
             </div>
-        </div>
+        </div>-->
 <div id="fade-in" class="box">
 
 </div>
         
     </div>
-    <div class="col-md-12" id="wordCloudChart">
-      <img src="https://loading.io/spinners/pies/lg.pie-chart-loading-gif.gif" class="loader" alt="Loader" id="wordLoader">
+    <div class="col-md-12">
+        <div class="side-menu col-md-1"><i class="fa fa-info-circle"></i>
+    <span class="nav-text">This is a word cloud showing the most frequent 1000 keywords that are used in movies.</span>
+        </div> 
+        <div class="col-md-11" id="wordCloudChart">
+        </div>
+      <!--<img src="https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif" class="loader" alt="Loader" id="wordLoader">-->
     </div>
 
 <div id="genreChordChart">

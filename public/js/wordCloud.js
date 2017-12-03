@@ -15,7 +15,7 @@ class wordCloud {
         this.svgHeight = 1000;
         //creates svg element within the div
         this.svg = wordcloudChart.append("svg")
-            .attr("width", this.svgWidth)
+            .attr("width", "100%")
             .attr("height", this.svgHeight)
             .attr("style","background:black")
             .append("g")

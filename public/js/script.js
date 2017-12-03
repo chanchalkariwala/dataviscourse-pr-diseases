@@ -231,7 +231,7 @@ function populateYearDropdown(years) {
 
     });
 
-    $("#button_budgetRevenueYearChart").trigger('click');
+   // $("#button_budgetRevenueYearChart").trigger('click');
     $('#year-dropdown').multiselect({
         enableClickableOptGroups: true,
         enableCollapsibleOptGroups: true,
@@ -569,7 +569,7 @@ d3.csv("public/data/budgetRevenueYearChart.csv", function(d) {
     let budRevYearChart = new budgetRevenueYearChart(finalFormattedData, movieDetails);
     budRevYearChart.update();
 });
-
+/*
 function openViz(vizName) {
     var i;
     var x = document.getElementsByClassName("viz");
@@ -579,4 +579,4 @@ function openViz(vizName) {
     }
     document.getElementById(vizName).style.display = "block";  
     document.getElementById("button_"+vizName).style.color = "pink";  
-}
+}*/

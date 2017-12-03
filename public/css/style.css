@@ -183,12 +183,13 @@ background-size: 100px 100px;
 
 .box {
   display: block;  
-  background-image: -webkit-gradient(linear,
+  /*background-image: -webkit-gradient(linear,
                                        left bottom,
                                        left top,
                                        color-stop(0.44, rgb(181, 225, 182)),
                                        color-stop(0.72, rgb(63, 180, 196)),
-                                       color-stop(0.86, rgb(8, 29, 88)));
+                                       color-stop(0.86, rgb(8, 29, 88)));*/
+background-color: grey;
   margin-bottom: 1em;
   position: absolute;
       left: 300px;
@@ -233,7 +234,7 @@ background-size: 100px 100px;
 width:100% !important;
 height:50px;
 overflow:visible;
-background-color: pink;
+background-color: #ccffff;
 }
 
 .side-menu {
@@ -265,6 +266,11 @@ padding: 0px !important;
 font-size: 30px !important;
 fill: white !important;
 font-weight: bold;
+}
+
+#wordCloudChart{
+  width:100%;
+  margin: auto;
 }
 
 .loader{
