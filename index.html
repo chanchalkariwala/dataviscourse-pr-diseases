@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Filmline</title>
-    <!-- <link rel="stylesheet" href="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/css/style.css"/> -->
-    <link rel="stylesheet" href="public/css/style.css" />
+    <link rel="stylesheet" href="https://rawgit.com/chanchalkariwala/dataviscourse-pr-filmline/gh-pages/public/css/style.css"/>
+    <!--<link rel="stylesheet" href="public/css/style.css" />-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://www.jquery-az.com/boots/css/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
 
@@ -21,14 +20,7 @@
         <div class="col-md-10"><svg id="genre-bar"></svg></div>
         <div class="col-md-1">
             <select id="year-dropdown" multiple="multiple"></select>
-        </div>
-        <!--<div class="col-md-10">
-            <svg id="genre-bar"></svg>
-        </div>
-        <div class="col-md-2">
-            <select id="year-dropdown" multiple="multiple"></select>
-        </div>  -->     
-        
+        </div>        
     <div style="padding-left: 25px;">
         <div class="col-md-6" id="chosenGenres"></div>
         <div class="col-md-6" id="chosenYears"></div>
@@ -43,32 +35,7 @@
 
     <div class="col-md-11" id="budgetRevenueYearChart" >
    <!-- <img src="https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif" class="loader" alt="Loader" id="budgetLoader">-->
-    </div>        
-    <!--        
-        <nav class="side-menu col-md-1"><i class="fa fa-info-circle"></i> 
-            <span class="nav-text">This bar chart shows three visualizations that you can switch between by using the tabs. For each year, 
-            the stacked bar on the left indicates one metric and the right, another. You can use the brushing tool to zoom in and view the data for the early years when the data was much smaller.</span>
-
-        </nav>
-        <div  class="col-md-11">
-            <div class="w3-bar well">
-              <button class="w3-bar-item w3-button" id="button_budgetRevenueYearChart" onclick="openViz('budgetRevenueYearChart')">budgetRevenueYearChart</button>
-              <button class="w3-bar-item w3-button" id="button_Paris" onclick="openViz('Paris')">Paris</button>
-              <button class="w3-bar-item w3-button" id="button_Tokyo" onclick="openViz('Tokyo')">Tokyo</button>
-            </div>
-            <div class="w3-container viz" style="display:none" id="budgetRevenueYearChart">
-                <img src="https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif" class="loader" alt="Loader" id="budgetLoader">
-            </div>
-            <div id="Paris" class="w3-container viz" style="display:none">
-              <h2>Paris</h2>
-              <p>Paris is the capital of France.</p> 
-            </div>
-
-            <div id="Tokyo" class="w3-container viz" style="display:none">
-              <h2>Tokyo</h2>
-              <p>Tokyo is the capital of Japan.</p>
-            </div>
-        </div>-->
+    </div>   
 <div id="fade-in" class="box">
 
 </div>
@@ -84,27 +51,33 @@
     </div>
 
     <div class="col-md-12" id="genreChordChart">
-        <span class="nav-text">This Chord diagram shows popular Genre Combinations.</span>
-        <div class="content">
+        <div class="side-menu col-md-1"><i class="fa fa-info-circle"></i>
+         <span class="nav-text">This Chord diagram shows popular Genre Combinations.</span>
+        </div>         
+        <div class="col-md-11 content">
             <div id="chart">
             </div>
         </div>
     </div>
 
     <div class="col-md-12" id="expenseBudgetChart">
-        <span class="nav-text">The following scatterplot allows to track the performance of a movie 'income' wise compared to it's expenses.</span>
-        <div class="content">
+        <div class="side-menu col-md-1"><i class="fa fa-info-circle"></i>
+            <span class="nav-text">The following scatterplot allows to track the performance of individual movies. Each circle represents the movie's income with respect to its budget. This chart supports a brushing feature in order to view crowded regions more clearly. There's a clear brush option at the bottom right, to reset the graph.</span>
+        </div>  
+        <div class=" col-md-11 content">
             <div id="chart">
             </div>
         </div>
     </div>
 
-    <div class="col-md-12" id="releaseChart">
-        <span class="nav-text">The following heatmap allows to see popular months for movie releases.</span>
+    <div id="releaseChart">
+         
+        <span class="side-menu" style="margin-left:30px"> <i class="fa fa-info-circle"></i> The following heatmap allows you to see popular months for movie releases.</span>
+             
         <div class="content">
             <div id="chart">
             </div>
-        </div>
+        </div>        
     </div>
 
 
