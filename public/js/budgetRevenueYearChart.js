@@ -8,24 +8,41 @@ class budgetRevenueYearChart {
             bottom: 30,
             left: 40
         };
-        let budgetRevenueYearChart = d3.select("#budgetRevenueYearChart");
+        this.budgetRevenueYearChart = d3.select("#budgetRevenueYearChart");
         this.onchange = onchange;
         //Gets access to the div element created for this chart from HTML
-        this.svgWidth = 1450;
-        this.svgHeight = 1200;
+        this.svgWidth = 1500;
+        this.svgHeight = 550;
         this.genres = genres;
+        this.loader=$("#budgetLoader");
         //creates svg element within the div
-        this.svg = budgetRevenueYearChart.append("svg")
+        /*this.loader=this.budgetRevenueYearChart.append("img")
+        .attr("class","Loader")
+        .attr("src","https://loading.io/spinners/pies/lg.pie-chart-loading-gif.gif")
+        .attr("alt","Loader")
+        .attr("style","width:100px; height:100px; position:absolute; left:"+this.svgWidth/2+"px; top:"+this.svgHeight/2+"px")*/
+
+        this.svg = this.budgetRevenueYearChart.append("svg")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight)
+            .attr("style",`background-color: #fff; 
+                            background-image: 
+                            linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+                            linear-gradient(#eee .1em, transparent .1em);
+                            background-size: 100% 1.2em;`)
             .append("g")
             .attr("transform", "translate(120,52),scale(0.8)");
-        this.svgWidth = +this.svg.attr("width") - this.margin.left - this.margin.right,
-            this.svgHeight = +this.svg.attr("height") - this.margin.top - this.margin.bottom;
+        this.svgWidth = this.svgWidth - this.margin.left - this.margin.right,
+            this.svgHeight = +this.svgHeight - this.margin.top - this.margin.bottom;
 
     };
 
     update() {
+        this.loader.show();
+
+
+
+        
         if (this.onchange)
             d3.select("#budgetRevenueYearChart").select("svg").remove();
         let data = this.budgetRevenueYear;
@@ -60,27 +77,27 @@ class budgetRevenueYearChart {
         var y = d3.scaleLinear().range([499, 0]); //d3.scaleLinear().rangeRound([height, 0]);
 
         let genreColors = {
-            'TV Movie': '#ffffd9',
-            'Foreign': '#e9f6b1',
-            'Western': '#d0ecb3',
-            'Documentary': '#b5e1b6',
-            'War': '#9ad6b9',
-            'Music': '#7cccbc',
-            'History': '#5fc0c0',
-            'Animation': '#3fb4c4',
-            'Mystery': '#35a6c2',
-            'Fantasy': '#2697c1',
-            'Family': '#2089bd',
-            'Horror': '#237bb6',
-            'Science Fiction': '#236eaf',
-            'Crime': '#2260a9',
-            'Adventure': '#2551a2',
-            'Romance': '#26439b',
-            'Action': '#253594',
-            'Thriller': '#1c2c80',
-            'Comedy': '#12246b',
-            'Drama': '#081d58'
-        };
+        'TV Movie': '#ffffd9',
+        'Western': '#e9f6b1',
+        'War': '#d0ecb3',
+        'History': '#b5e1b6',
+        'Music': '#9ad6b9',
+        'Foreign': '#7cccbc',
+        'Animation': '#5fc0c0',
+        'Fantasy': '#3fb4c4',
+        'Mystery': '#35a6c2',
+        'Family': '#2697c1',
+        'Science Fiction': '#2089bd',
+        'Adventure': '#237bb6',
+        'Crime': '#236eaf',
+        'Horror': '#2260a9',
+        'Documentary': '#2551a2',
+        'Action': '#26439b',
+        'Romance': '#253594',
+        'Thriller': '#1c2c80',
+        'Comedy': '#12246b',
+        'Drama': '#081d58'
+    };
         let tempGenreColors = jQuery.extend(true, {}, genreColors);
         if (this.onchange) {
             for (let genre in tempGenreColors) {
@@ -102,7 +119,9 @@ class budgetRevenueYearChart {
         let x_domain=data[1].map(function(d) {
             return d.year;
         });
-        x.domain(x_domain);
+        x.domain(x_domain.sort(function(a, b) {
+          return a - b;
+        }));
         y.domain([0, d3.max(data[1], function(d) {
             return d.total;
         })]);
@@ -124,7 +143,7 @@ class budgetRevenueYearChart {
         d3.select(".axis--x").selectAll("text:not(#xAxisLabel)").attr("x", "-20");
 
         let needToGetOffset=1;
-        let offset=0;
+        let offset=625;
         let whichGenre = -1;
         let budget_rects=this.svg.append("g")
             .selectAll("g")
@@ -141,9 +160,10 @@ class budgetRevenueYearChart {
             .attr("x", function(d) {
                 if(needToGetOffset){
                     let next_year=0;
-                    if(d.data.year != x_domain[x_domain.length-1])
+                    if(d.data.year != x_domain[x_domain.length-1]){
                         next_year=x_domain[x_domain.indexOf(d.data.year)+1];
-                    offset=((x(d.data.year)+x(next_year))/2)-45;
+                        offset=((x(d.data.year)+x(next_year))/2)-(x.domain.length<24?45:40);
+                    }
                     needToGetOffset=0;
                 }              
                 
@@ -285,7 +305,7 @@ budget_rects.transition()
             .data(keys.slice().reverse())
             .enter().append("g")
             .attr("transform", function(d, i) {
-                return "translate(0," + i * 20 + ")";
+                return "translate(-200," + i * 20 + ")";
             });
 
         legend.append("rect")
@@ -301,6 +321,6 @@ budget_rects.transition()
             .text(function(d) {
                 return d;
             });
-
+           this.loader.hide();
     }
 }

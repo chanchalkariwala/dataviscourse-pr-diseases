@@ -2,27 +2,27 @@ var allDataForViz = {};
 
 let genreColors = {
         'TV Movie': '#ffffd9',
-        'Foreign': '#e9f6b1',
-        'Western': '#d0ecb3',
-        'Documentary': '#b5e1b6',
-        'War': '#9ad6b9',
-        'Music': '#7cccbc',
-        'History': '#5fc0c0',
-        'Animation': '#3fb4c4',
+        'Western': '#e9f6b1',
+        'War': '#d0ecb3',
+        'History': '#b5e1b6',
+        'Music': '#9ad6b9',
+        'Foreign': '#7cccbc',
+        'Animation': '#5fc0c0',
+        'Fantasy': '#3fb4c4',
         'Mystery': '#35a6c2',
-        'Fantasy': '#2697c1',
-        'Family': '#2089bd',
-        'Horror': '#237bb6',
-        'Science Fiction': '#236eaf',
-        'Crime': '#2260a9',
-        'Adventure': '#2551a2',
-        'Romance': '#26439b',
-        'Action': '#253594',
+        'Family': '#2697c1',
+        'Science Fiction': '#2089bd',
+        'Adventure': '#237bb6',
+        'Crime': '#236eaf',
+        'Horror': '#2260a9',
+        'Documentary': '#2551a2',
+        'Action': '#26439b',
+        'Romance': '#253594',
         'Thriller': '#1c2c80',
         'Comedy': '#12246b',
         'Drama': '#081d58'
     };
-    
+
 allDataForViz['genreColors'] = genreColors
 allDataForViz["allGenres"] = {}
 
@@ -90,26 +90,32 @@ function updateBudgetRevenue(type, ul) {
     var years = [];
     for (let year of yearsWithDecades) {
         if (year.includes('-')) {
-            for (let first = year.split("-")[0]; first <= year.split("-")[1]; first++) {
+            for (let first = +(year.split("-")[0])+1; first <= year.split("-")[1]; first++) {
                 years.push(+first);
             }
         } else {
             years.push(year);
         }
     }
-    let dictOfDict = getDictOfDict(allDataForViz["budgetRevenueYearChart"], 1, years, genres)[0];
+        //drawbars(finalFormattedData);
+
+    
+
+    let dictOfDictAndKeywords = getDictOfDict(allDataForViz["budgetRevenueYearChart"], 1, years, genres);
+    let dictOfDict=dictOfDictAndKeywords[0];
     let finalFormattedData = getFinalFormattedDataForBudgetRevenue(dictOfDict);
-    //drawbars(finalFormattedData);
 
     let budRevYearChart = new budgetRevenueYearChart(finalFormattedData, allDataForViz["budgetRevenueYearChart"], 1, genres);
     budRevYearChart.update();
-    
+    let keywords=dictOfDictAndKeywords[1]; 
+    let wordCloudChart = new wordCloud(keywords,1);
+    wordCloudChart.update(); 
+
     let expenseBudgetChart = new ExpenseBudgetChart(allDataForViz["movieDetails"], 1, years, genres, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
     
     let releaseChart = new ReleaseChart(allDataForViz["movieDetails"], 1, years, genres, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
     
     let genreChart = new GenreChart(allDataForViz["movieDetails"], 1, years, genres, allGenres = allDataForViz["allGenres"], genreColors = allDataForViz['genreColors']);
-    
 }
 
 function defineOnclickEventsForYearsDropdown() {
@@ -205,26 +211,27 @@ function defineOnclickEventsForYearsDropdown() {
 function populateYearDropdown(years) {
     //var years = [1960,1961,1962,1963,1964,1965,1966,1967,1968,1969,1970,1971,1972,1973,1974,1975,1976,1977,1978,1979,1980,1981,1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017];
     var select = $("#year-dropdown");
-    let optgroup = "";
-    if (years[0] % 10 != 0) {
-        optgroup = $("<optgroup />").attr({
-            "value": "Decade " + (years[0] - (years[0] % 10)) + "-" + (years[0] - (years[0] % 10) + 10),
-            "label": "Decade " + (years[0] - (years[0] % 10)) + "-" + (years[0] - (years[0] % 10) + 10)
-        });
-
-    }
+    let optgroup = $("<optgroup />").attr({
+              "value": "Decade " + (years[0] - (years[0] % 10)) + "-" + (years[0] - (years[0] % 10) + 10),
+              "label": "Decade " + (years[0] - (years[0] % 10)) + "-" + (years[0] - (years[0] % 10) + 10)
+          });
+    let lower_limit=years[0] - (years[0] % 10),upper_limit=years[0] - (years[0] % 10)+10;
     $.each(years, function() {
-        if (this % 10 == 0) {
-            optgroup = $("<optgroup />").attr({
-                "value": "Decade " + this + "-" + (this + 10),
-                "label": "Decade " + this + "-" + (this + 10)
+            if (!(this >=lower_limit && this<=upper_limit)) {
+          optgroup = $("<optgroup />").attr({
+                "value": "Decade " + (this - (this % 10)) + "-" + (this - (this % 10) + 10),
+                "label": "Decade " + (this - (this % 10)) + "-" + (this - (this % 10) + 10)
             });
-
-        }
+          lower_limit=this - (this % 10);
+          upper_limit=this - (this % 10)+10;
+                }
+        
         optgroup.append($("<option />").val(this).text(this));
-        select.append(optgroup);
+        select.append(optgroup);  
 
     });
+
+    $("#button_budgetRevenueYearChart").trigger('click');
     $('#year-dropdown').multiselect({
         enableClickableOptGroups: true,
         enableCollapsibleOptGroups: true,
@@ -256,7 +263,7 @@ function populateYearDropdown(years) {
 
 function drawGenreBars(genres) {
     let svg = d3.select('#genre-bar')
-        .attr("width", '100%')
+        .attr("width", "100%" )
         .attr("height", 50)
         .append("g")
         .attr("transform", "translate(10,10),scale(0.76)");
@@ -289,28 +296,7 @@ function drawGenreBars(genres) {
     genres.sort(function(first, second) {
         return first[1] - second[1];
     });
-    let genreColors = {
-        'TV Movie': '#ffffd9',
-        'Foreign': '#e9f6b1',
-        'Western': '#d0ecb3',
-        'Documentary': '#b5e1b6',
-        'War': '#9ad6b9',
-        'Music': '#7cccbc',
-        'History': '#5fc0c0',
-        'Animation': '#3fb4c4',
-        'Mystery': '#35a6c2',
-        'Fantasy': '#2697c1',
-        'Family': '#2089bd',
-        'Horror': '#237bb6',
-        'Science Fiction': '#236eaf',
-        'Crime': '#2260a9',
-        'Adventure': '#2551a2',
-        'Romance': '#26439b',
-        'Action': '#253594',
-        'Thriller': '#1c2c80',
-        'Comedy': '#12246b',
-        'Drama': '#081d58'
-    };
+    
     //let genreColors={'Action':'#0000ff', 'Adventure':' #006600', 'Fantasy':'#ffff00', 'Science Fiction':'#e600e6', 'Crime':'#7094db', 'Drama':'#ffb3d1', 'Thriller':'#00ffff', 'Animation':'#00ff00', 'Family':'#ccffcc', 'Western':'#cccccc', 'Comedy':'#66ffcc', 'Romance':'#ff0000', 'Horror':'#000000', 'Mystery':'#ffb3b3', 'History':'#e6b800', 'War':'#d24dff', 'Music':'#660066', 'Documentary':'#000066', 'Foreign':'#ccffff', 'TV Movie':'#ffffcc'};
 
 
@@ -339,7 +325,7 @@ function drawGenreBars(genres) {
         })
         .attr("y", 5)
         .attr("fill", function(d) {
-            return allDataForViz['genreColors'][d[0]]
+            return genreColors[d[0]]
         })
         .attr("stroke", "pink")
         .attr("stroke-width", "2")
@@ -348,10 +334,10 @@ function drawGenreBars(genres) {
             return d[0]
         })
         .attr("width", function(d) {
-            return d[1] * 13
+            return d[1]+"%";
         })
         .attr("color", function(d, i) {
-            return allDataForViz['genreColors'][d[0]]
+            return genreColors[d[0]]
         });
     rectangles.on("click", function() {
         if (this.getAttribute("clicked") == "no") {
@@ -432,55 +418,60 @@ function getDictOfDict(movieDetails, onchange = 0, selectedYears = 0, selectedGe
             totalGenres++;
         }
         for (let item of JSON.parse(row.keywords)) {
-            if (item.name in keywords) {
-                keywords[item.name] += 1;
+            if (item in keywords) {
+                keywords[item] += 1;
             } else {
-                keywords[item.name] = 1;
+                keywords[item] = 1;
             }
             totalKeywords++;
         }
-        if (row.budget > 100 && row.year >= 1960) {
+        if (row.budget > 100 && row.revenue>100){ //&& row.year >= 1960) {
             if (row["year"] in primaryDict) {
                 for (let item of JSON.parse(row.genres)) {
                     if (item.name in primaryDict[row.year]["budget"]) {
-                        primaryDict[row.year]["budget"][item.name] += row.budget / (1000000 * JSON.parse(row.genres).length);
-                        //primaryDict[row.year]["totalBudget"] += row.budget / 1000000;
-                        primaryDict[row.year]["revenue"][item.name] += row.revenue / (1000000 * JSON.parse(row.genres).length);
-                        //primaryDict[row.year]["totalRevenue"] += row.revenue / 1000000;
+                        primaryDict[row.year]["budget"][item.name] += +row.budget / (1000000 * JSON.parse(row.genres).length);
+                        primaryDict[row.year]["runtime"][item.name] += +row.runtime>0?+row.runtime:0;
+                        
+                        primaryDict[row.year]["revenue"][item.name] += +row.revenue / (1000000 * JSON.parse(row.genres).length);
                     } else {
-                        primaryDict[row.year]["budget"][item.name] = row.budget / (1000000 * JSON.parse(row.genres).length);
-                        primaryDict[row.year]["revenue"][item.name] = row.revenue / (1000000 * JSON.parse(row.genres).length);
-                        //primaryDict[row.year]["totalBudget"] += row.budget / 1000000;
-                        //primaryDict[row.year]["totalRevenue"] += row.revenue / 1000000;
+                        primaryDict[row.year]["budget"][item.name] = +row.budget / (1000000 * JSON.parse(row.genres).length);
+                        primaryDict[row.year]["revenue"][item.name] = +row.revenue / (1000000 * JSON.parse(row.genres).length);
+                        primaryDict[row.year]["runtime"][item.name] = +row.runtime>0?+row.runtime:0;
+                        
                     }
                 }
-                primaryDict[row.year]["totalBudget"] += row.budget / 1000000;
-                primaryDict[row.year]["totalRevenue"] += row.revenue / 1000000;
+                primaryDict[row.year]["totalBudget"] += +row.budget / 1000000;
+                primaryDict[row.year]["totalRevenue"] += +row.revenue / 1000000;
+                primaryDict[row.year]["totalRuntime"] += +row.runtime>0?+row.runtime:0;
+                primaryDict[row.year]["totalNumberOfMovies"] += 1;
             } else {
                 let yearNotPresent = 1;
                 for (let item of JSON.parse(row.genres)) {
                     if (yearNotPresent) {
-
                         let temp1 = {},
                             temp2 = {},
-                            temp3 = {};
+                            temp3 = {},
+                            temp4 = {};
                         temp1[item.name] = row.budget / (1000000 * JSON.parse(row.genres).length);
                         temp3["budget"] = temp1;
                         temp2[item.name] = row.revenue / (1000000 * JSON.parse(row.genres).length);
                         temp3["revenue"] = temp2;
-                        // temp3["totalBudget"] = row.budget / (1000000*JSON.parse(row.genres).length);
-                        //temp3["totalRevenue"] = row.revenue / (1000000*JSON.parse(row.genres).length);
+                        temp4[item.name] = +row.runtime>0?+row.runtime:0;
+                        
+                        temp3["runtime"] = temp4;
                         primaryDict[row.year] = temp3;
                         yearNotPresent = 0;
                     } else {
-                        primaryDict[row.year]["budget"][item.name] = row.budget / 1000000;
-                        primaryDict[row.year]["revenue"][item.name] = row.revenue / 1000000;
-                        //primaryDict[row.year]["totalBudget"] += row.budget / 1000000;
-                        //primaryDict[row.year]["totalRevenue"] += row.revenue / 1000000;
+                        primaryDict[row.year]["budget"][item.name] = +row.budget / 1000000;
+                        primaryDict[row.year]["revenue"][item.name] = +row.revenue / 1000000;
+                        primaryDict[row.year]["runtime"][item.name] = +row.runtime>0?+row.runtime:0;
+                        
                     }
                 }
-                primaryDict[row.year]["totalBudget"] = row.budget / 1000000;
-                primaryDict[row.year]["totalRevenue"] = row.revenue / 1000000;
+                primaryDict[row.year]["totalBudget"] = +row.budget / 1000000;
+                primaryDict[row.year]["totalRevenue"] = +row.revenue / 1000000;
+                primaryDict[row.year]["totalRuntime"] = +row.runtime>0?+row.runtime:0;
+                primaryDict[row.year]["totalNumberOfMovies"] = 1;
             }
         }
     }
@@ -489,9 +480,12 @@ function getDictOfDict(movieDetails, onchange = 0, selectedYears = 0, selectedGe
         for (let item in genres) {
             genres[item] = (genres[item] / totalGenres) * 100;
         }
-        allDataForViz["allGenres"] = genres
+
         drawGenreBars(genres);
-        populateYearDropdown(years);
+        allDataForViz["genres"]=genres;
+        populateYearDropdown(years.sort(function(a, b) {
+          return a - b;
+        }));
        
     }
 
@@ -501,7 +495,10 @@ function getDictOfDict(movieDetails, onchange = 0, selectedYears = 0, selectedGe
 function getFinalFormattedDataForBudgetRevenue(dictOfDict) {
     let total = [];
     let data = [],
-        data2 = [];
+        data2 = [],
+        data3 = {};
+        data4={};   
+        totalMovies=0;
     let genres = ['TV Movie', 'Foreign', 'Western', 'Documentary', 'War', 'Music', 'History', 'Animation', 'Mystery', 'Fantasy', 'Family', 'Horror', 'Science Fiction', 'Crime', 'Adventure', 'Romance', 'Action', 'Thriller', 'Comedy', 'Drama'];
     for (let item in dictOfDict) {
         let temp = {},
@@ -509,26 +506,47 @@ function getFinalFormattedDataForBudgetRevenue(dictOfDict) {
         temp["year"] = item, temp2["year"] = item;
         temp["total"] = dictOfDict[item].totalBudget;
         temp2["total"] = dictOfDict[item].totalRevenue;
+        totalMovies+=dictOfDict[item].totalNumberOfMovies;
+        data3[item] = dictOfDict[item].totalRuntime/dictOfDict[item].totalNumberOfMovies;
         //temp["total"] = 0;
         //temp2["total"] = 0;
         for (let genre of genres) {
             temp[genre] = (genre in dictOfDict[item].budget) ? dictOfDict[item].budget[genre] : 0;
             temp2[genre] = (genre in dictOfDict[item].revenue) ? dictOfDict[item].revenue[genre] : 0;
+            if(genre in data4){
+                
+                data4[genre] += (genre in dictOfDict[item].runtime) ? +dictOfDict[item].runtime[genre] : 0;
+            }                
+            else{
+                
+                data4[genre] = (genre in dictOfDict[item].runtime) ? +dictOfDict[item].runtime[genre] : 0;
+            }
+                
             //temp["total"] += temp[genre];
             //temp2["total"] += temp2[genre];
         }
         data.push(temp);
-        data2.push(temp2)
+        data2.push(temp2);
     }
+    for(let genre in data4){
+        data4[genre]/=(allDataForViz["genres"][genre]*totalMovies/100);
+        }
     total.push(data);
     total.push(data2);
+    total.push(data3);
+    total.push(data4);
     return total;
 }
 
 d3.csv("public/data/budgetRevenueYearChart.csv", function(d) {
     d.budget = +d.budget;
     d.revenue = +d.revenue;
-    d.year = +d.year;
+    //if(d.release_date.includes('-')){
+     // d.release_date=d.release_date.split('-')[2]+'/'+d.release_date.split('-')[1]+'/'+d.release_date.split('-')[0]
+      //console.log(i,d.release_date);
+    //}
+    
+    d.year = +d.release_date.split('/')[2];
     return d;
 }, function(error, movieDetails) {
     if (error)
@@ -537,12 +555,28 @@ d3.csv("public/data/budgetRevenueYearChart.csv", function(d) {
     //let budRev = getBudgetRevenueConsolidatedDataAndGenresForMenu(movieDetails);
     let dictOfDictAndKeywords = getDictOfDict(movieDetails);
     let dictOfDict=dictOfDictAndKeywords[0]
-    let finalFormattedData = getFinalFormattedDataForBudgetRevenue(dictOfDict);
+    let finalFormattedData = [];
+    let temp=getFinalFormattedDataForBudgetRevenue(dictOfDict);
+    finalFormattedData.push(temp[0]);
+    finalFormattedData.push(temp[1]);
     let keywords=dictOfDictAndKeywords[1]; 
     let wordCloudChart = new wordCloud(keywords);
     wordCloudChart.update(); 
+    let yearRuntime=temp[2];
+    let genreRuntime=temp[2];
     //drawbars(finalFormattedData);
 
     let budRevYearChart = new budgetRevenueYearChart(finalFormattedData, movieDetails);
     budRevYearChart.update();
 });
+
+function openViz(vizName) {
+    var i;
+    var x = document.getElementsByClassName("viz");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none"; 
+       $("[id^='button']").css("color","black");
+    }
+    document.getElementById(vizName).style.display = "block";  
+    document.getElementById("button_"+vizName).style.color = "pink";  
+}

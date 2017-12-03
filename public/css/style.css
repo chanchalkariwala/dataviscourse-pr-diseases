@@ -1,3 +1,5 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
+
 #divYearSelector{
     display:inline;
 }
@@ -33,8 +35,9 @@
     position: static !important;
 }
 #menu-bar .btn-group{
-    vertical-align: baseline !important;
-        margin-bottom: 8px!important;
+    /*vertical-align: baseline !important;*/
+        margin-bottom: -25px!important;
+        margin-left: -50px !important;
 }
 
 .d3-tip:not(:empty) {
@@ -101,20 +104,32 @@
 }
 
 body{
-    background-color: #fff; 
-background-image: 
-linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-linear-gradient(#eee .1em, transparent .1em);
-background-size: 100% 1.2em;
+  
+background:
+linear-gradient(324deg, white 4%,   transparent 4%) -70px 43px,
+linear-gradient( 36deg, white 4%,   transparent 4%) 30px 43px,
+linear-gradient( 72deg, #ffffcc 8.5%, transparent 8.5%) 30px 43px,
+linear-gradient(288deg, #ffffcc 8.5%, transparent 8.5%) -70px 43px,
+linear-gradient(216deg, #ffffcc 7.5%, transparent 7.5%) -70px 23px,
+linear-gradient(144deg, #ffffcc 7.5%, transparent 7.5%) 30px 23px,
+
+linear-gradient(324deg, white 4%,   transparent 4%) -20px 93px,
+linear-gradient( 36deg, white 4%,   transparent 4%) 80px 93px,
+linear-gradient( 72deg, #ffffcc 8.5%, transparent 8.5%) 80px 93px,
+linear-gradient(288deg, #ffffcc 8.5%, transparent 8.5%) -20px 93px,
+linear-gradient(216deg, #ffffcc 7.5%, transparent 7.5%) -20px 73px,
+linear-gradient(144deg, #ffffcc 7.5%, transparent 7.5%) 80px 73px;
+background-color: white !important;
+background-size: 100px 100px;
 }
 
 #chosenGenres  ul{
-    -webkit-columns: 6;
+    -webkit-columns: 4;
     list-style-type: none;
     padding-left: 0px;
 }
 #chosenYears  ul{
-    -webkit-columns: 4;
+    -webkit-columns: 5;
     list-style-type: none;
     padding-left: 0px;
 }
@@ -214,6 +229,58 @@ background-size: 100% 1.2em;
     z-index: 9999;
 }
 
+.side-menu:hover,nav.side-menu.expanded {
+width:100% !important;
+height:50px;
+overflow:visible;
+background-color: pink;
+}
+
+.side-menu {
+height:20px;
+left:0;
+width:0px !important;
+overflow:hidden;
+}
+.nav-text{
+    padding-left: 20px; 
+}
+.w3-bar-item{
+    float: right !important;
+}
+
+.w3-bar{
+padding: 0px !important;
+}
+ /*   background-image: linear-gradient(
+      to right, 
+      #ffffd9, 
+      rgb(63, 180, 196),
+      rgb(8, 29, 88)
+    );
+}
+*/
+
+#wordCloudChart text:hover{
+font-size: 30px !important;
+fill: white !important;
+font-weight: bold;
+}
+
+.loader{
+  position: absolute;
+  left: 50%;
+  top: 30%;
+}
+
+@font-face {
+    font-family: 'showtimenormal';
+    src: url('showtime-webfont.woff2') format('woff2'),
+         url('showtime-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
 .incexpCircle:hover{
     fill:red;
     fill-opacity:1;
