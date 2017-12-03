@@ -132,6 +132,41 @@ class ExpenseBudgetChart {
     addCircles(){
         let self = this;
         
+        var tooltip_render = function(tooltip_data) {
+            let text = "<div> <strong>" + tooltip_data.title + "</strong><br/>Released on " + tooltip_data.release + "<br/>" + tooltip_data.genre
+            return text;
+        }
+        let tip = d3.tip().attr('class', 'd3-tip')
+            .direction('e')
+            .offset(function() {
+                return [0, 0];
+            })
+            .html((d) => {
+                
+                let genres = '';
+                for(let i=0; i<d.genresList.length; i++)
+                {
+                    genres = genres + d.genresList[i]
+                    if(i != d.genresList.length - 1)
+                    {
+                        genres = genres + ', '
+                    }
+                }
+                
+                // populate data in the following format
+                let tooltip_data = {
+                    "title" : d.original_title,
+                    "release": d.release_date,
+                    "genre": genres
+                }
+                
+                var html = tooltip_render(tooltip_data);
+                return html;
+                //return 'hello';
+            });
+        
+        this.svg.call(tip);
+        
         let circles = this.svg.selectAll('circle')
             .data(this.movieDetails)
             
@@ -155,22 +190,9 @@ class ExpenseBudgetChart {
                     return self.genreColors[d.genresList[0]]
                 }
             })
+            .attr('class', 'incexpCircle')
             
-        circles.on('mouseover', function(d){
-                d3.select(this).attr('fill', 'red')
-                d3.select(this).attr('fill-opacity', '1')
-                d3.select(this).attr('r', '7')
-                
-            }).on('mouseout', function(d){
-                d3.select(this).attr('fill', function(d, i){
-                    if(d.genresList.length == 1)
-                    {
-                        return self.genreColors[d.genresList[0]]
-                    }
-                })
-                d3.select(this).attr('fill-opacity', '0.4')
-                d3.select(this).attr('r', '5')
-            })
+        circles.on('mouseover', tip.show).on('mouseout', tip.hide)
         
         let negCircles = circles.filter(function(d){
             if(d3.select(this).attr('cx') < self.xScale.range()[0])
@@ -188,10 +210,12 @@ class ExpenseBudgetChart {
         
         negCircles.remove();
         
+        /*
         circles.select('title').remove();
         
         circles.append('title')
             .text(function(d){ return d.original_title + ', ' + d.release_date + '\n'+ d.genresList; })
+        */
     };
     
     addAxis(){

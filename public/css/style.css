@@ -213,3 +213,9 @@ background-size: 100% 1.2em;
 .d3-tip{
     z-index: 9999;
 }
+
+.incexpCircle:hover{
+    fill:red;
+    fill-opacity:1;
+    r:7;
+}
