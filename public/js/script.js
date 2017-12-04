@@ -480,7 +480,9 @@ function getDictOfDict(movieDetails, onchange = 0, selectedYears = 0, selectedGe
         for (let item in genres) {
             genres[item] = (genres[item] / totalGenres) * 100;
         }
-
+        
+        allDataForViz["allGenres"] = genres
+        
         drawGenreBars(genres);
         allDataForViz["genres"]=genres;
         populateYearDropdown(years.sort(function(a, b) {

@@ -5,7 +5,7 @@ class ReleaseChart {
         
         let self = this;
         
-        this.allGenres = Object.keys(allGenres)
+        this.allGenres = Object.keys(allGenres).slice()
         this.genreColors = genreColors 
         
         this.movieDetails = movieDetails;
@@ -48,7 +48,7 @@ class ReleaseChart {
         let diffGenres = []
         if(genres != undefined && genres != 0)
         {
-            diffGenres = this.allGenres.filter(x => genres.indexOf(x) < 0 );
+            diffGenres = this.allGenres.slice().filter(x => genres.indexOf(x) < 0 );
         }
         if(diffGenres.length != 0)
         {

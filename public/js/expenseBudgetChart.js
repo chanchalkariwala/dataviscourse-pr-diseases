@@ -6,7 +6,7 @@ class ExpenseBudgetChart {
         let self = this;
 
         this.movieDetails = movieDetails.slice();
-        this.allGenres = Object.keys(allGenres)
+        this.allGenres = Object.keys(allGenres).slice()
         this.genreColors = genreColors 
         
         this.movieDetailsTotal = this.movieDetails.slice();
@@ -107,7 +107,7 @@ class ExpenseBudgetChart {
             else
             {
                
-                let diff = this.allGenres.filter(x => genres.indexOf(x) < 0 );
+                let diff = this.allGenres.slice().filter(x => genres.indexOf(x) < 0 );
                 
                 for(var i = 0; i<this.movieDetails.length; i++)
                 {
